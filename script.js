@@ -346,33 +346,12 @@ if (skillTrack) {
   }, 1000);
 }
 
-const interactiveGroups = document.querySelectorAll('.interactive-group');
-
-interactiveGroups.forEach((group) => {
-  const items = group.querySelectorAll('.interactive-item');
-
-  items.forEach((item) => {
-    item.addEventListener('mouseenter', () => {
-      group.classList.add('has-hover');
-      items.forEach((target) => target.classList.remove('is-focus'));
-      item.classList.add('is-focus');
-    });
-
-    item.addEventListener('mouseleave', () => {
-      item.classList.remove('is-focus');
-      group.classList.remove('has-hover');
-    });
-
-    item.addEventListener('focusin', () => {
-      group.classList.add('has-hover');
-      items.forEach((target) => target.classList.remove('is-focus'));
-      item.classList.add('is-focus');
-    });
-
-    item.addEventListener('focusout', () => {
-      group.classList.remove('has-hover');
-      item.classList.remove('is-focus');
-    });
+// Stagger reveal animations for cards within grids
+const staggerContainers = document.querySelectorAll('.skills-grid, .exp-timeline, .edu-grid, .cert-grid');
+staggerContainers.forEach(container => {
+  const items = container.querySelectorAll('.reveal');
+  items.forEach((item, i) => {
+    item.style.transitionDelay = `${i * 80}ms`;
   });
 });
 
@@ -389,7 +368,7 @@ if (supportsIntersectionObserver) {
         }
       });
     },
-    { threshold: 0.12 }
+    { threshold: 0.1 }
   );
 
   revealElements.forEach((el) => revealObserver.observe(el));
