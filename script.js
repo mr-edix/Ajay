@@ -295,56 +295,69 @@ if (rotatingTitle && rotatingTitles.length > 1) {
   }, 2600);
 }
 
-// Skill scroller
-const skillTrack = document.getElementById('skill-track');
-if (skillTrack) {
-  const originalItems = Array.from(skillTrack.querySelectorAll('.skill-item'));
-  const total = originalItems.length;
-  const visible = 5;
+// 3D Mouse-tracking card tilt effect
+const canHover = window.matchMedia('(hover: hover)').matches;
+if (canHover) {
+  const tiltCards = document.querySelectorAll('.skill-card, .exp-card, .edu-card, .cert-card, .summary-card, .contact-info-card, .contact-form-card');
 
-  // Clone all items and append for seamless loop
-  originalItems.forEach(item => {
-    skillTrack.appendChild(item.cloneNode(true));
-  });
+  tiltCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
 
-  const allItems = skillTrack.querySelectorAll('.skill-item');
-  let currentIndex = 0;
-
-  const itemH = 54;
-  const setupSizes = () => {
-    const scroller = skillTrack.parentElement;
-    allItems.forEach(item => { item.style.height = itemH + 'px'; });
-  };
-
-  setupSizes();
-  window.addEventListener('resize', () => { setupSizes(); applyState(); });
-
-  const applyState = () => {
-    skillTrack.style.transform = `translateY(-${currentIndex * itemH}px)`;
-    const centerIndex = currentIndex + 2;
-    allItems.forEach((item, i) => {
-      item.classList.toggle('active', i >= currentIndex && i < currentIndex + visible);
-      item.classList.toggle('center', i === centerIndex);
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px)`;
     });
-  };
 
-  applyState();
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateZ(0)';
+      card.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.45s cubic-bezier(0.23,1,0.32,1), border-color 0.35s ease';
+    });
 
-  setInterval(() => {
-    currentIndex++;
-    skillTrack.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-    applyState();
-
-    // When we've scrolled past original set, silently reset
-    if (currentIndex >= total) {
-      setTimeout(() => {
-        skillTrack.style.transition = 'none';
-        currentIndex = 0;
-        applyState();
-      }, 520);
-    }
-  }, 1000);
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'box-shadow 0.45s cubic-bezier(0.23,1,0.32,1), border-color 0.35s ease';
+    });
+  });
 }
+
+// Animated counter for stat numbers
+const animateCounters = () => {
+  const stats = document.querySelectorAll('.stat-number');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const text = el.textContent;
+        const match = text.match(/(\d+)/);
+        if (match) {
+          const target = parseInt(match[1], 10);
+          const suffix = text.replace(match[1], '');
+          const duration = 1200;
+          const startTime = performance.now();
+
+          const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(eased * target) + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+          };
+
+          requestAnimationFrame(step);
+        }
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  stats.forEach(stat => counterObserver.observe(stat));
+};
+
+animateCounters();
 
 // Stagger reveal animations for cards within grids
 const staggerContainers = document.querySelectorAll('.skills-grid, .exp-timeline, .edu-grid, .cert-grid');
