@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="earth-bg" aria-hidden="true">
+    <canvas id="earth-canvas"></canvas>
+  </div>
+
   <a class="skip-link" href="#home">Skip to content</a>
 
   <header class="site-header" id="top">
@@ -47,12 +51,6 @@ Full-Stack Software Engineer specializing in scalable backend services, React-ba
             <a href="#skills" class="btn btn-primary">View Skills</a>
             <a href="#contact" class="btn btn-primary">Contact Me</a>
             <a href="assets/resume.pdf" target="_blank" rel="noopener" class="btn btn-primary">View Resume</a>
-          </div>
-        </div>
-        <div class="hero-photo-wrap reveal">
-          <div class="hero-photo-card" aria-label="Profile photo">
-            <img src="assets/profile.jpg" alt="Ajay Kumar profile" class="hero-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
-            <div class="hero-photo-fallback" aria-hidden="true">AK</div>
           </div>
         </div>
       </div>
@@ -289,6 +287,7 @@ Full-Stack Software Engineer specializing in scalable backend services, React-ba
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
