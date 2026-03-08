@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ajay Kumar - Full-Stack Software Engineer Portfolio" />
+  <title>Ajay Kumar | Full-Stack Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#home">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <nav class="navbar container" aria-label="Primary navigation">
+      <a href="#home" class="brand">Ajay Kumar</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section" id="home">
+      <div class="container hero-grid">
+        <div class="hero-content reveal">
+          <p class="eyebrow">Software Engineer Portfolio</p>
+          <h1>Ajay Kumar</h1>
+          <h2 id="hero-rotating-title" aria-live="polite">Full-Stack Software Engineer</h2>
+          <p class="hero-intro">
+            Full-Stack Software Engineer specializing in scalable backend services, cloud deployments, and reliability automation.
+          </p>
+          <div class="hero-actions">
+            <a href="#skills" class="btn btn-primary">View Skills</a>
+            <a href="#contact" class="btn btn-secondary">Contact Me</a>
+            <a href="assets/resume.pdf" target="_blank" rel="noopener" class="btn btn-secondary">View Resume</a>
+          </div>
+        </div>
+        <div class="hero-card reveal" aria-label="Quick profile card">
+          <img src="assets/profile.jpg" alt="Ajay Kumar profile" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />
+          <div class="profile-fallback" aria-hidden="true">AK</div>
+          <div class="hero-card-content">
+            <h3>Quick Profile</h3>
+            <p>Full-Stack Software Engineer focused on reliable backend services, cloud deployment, and observability-driven delivery.</p>
+            <ul class="meta-list">
+              <li><strong>Location:</strong> Bangalore, India</li>
+              <li><strong>Email:</strong> <a href="mailto:ajaydkumar.work@gmail.com">ajaydkumar.work@gmail.com</a></li>
+              <li><strong>Phone:</strong> <a href="tel:+919334393498">+91 9334393498</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Profile</p>
+          <h2>About Me</h2>
+        </header>
+        <article class="card reveal">
+          <p>
+            Full-Stack Software Engineer with experience building scalable backend systems, monitoring automation, and internal dashboards for enterprise retail platforms. Skilled in Node.js, Express, React, and AWS cloud services. Passionate about reliability engineering, performance optimization, and building secure APIs.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Technical Expertise</p>
+          <h2>Skills</h2>
+        </header>
+        <div class="grid cards-grid interactive-group" data-group="skills">
+          <article class="card reveal interactive-item">
+            <h3>Languages</h3>
+            <ul>
+              <li>JavaScript (ES6+)</li>
+              <li>Python</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Backend & APIs</h3>
+            <ul>
+              <li>Node.js</li>
+              <li>Express.js</li>
+              <li>REST APIs</li>
+              <li>JWT Authentication / Authorization</li>
+              <li>Input Validation</li>
+              <li>Error Handling</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Frontend</h3>
+            <ul>
+              <li>React.js</li>
+              <li>HTML5</li>
+              <li>CSS3</li>
+              <li>Responsive Web Design</li>
+              <li>GSAP</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Reliability Automation</h3>
+            <ul>
+              <li>Selenium WebDriver</li>
+              <li>Synthetic Monitoring Scripts</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Databases</h3>
+            <ul>
+              <li>MySQL</li>
+              <li>MongoDB</li>
+              <li>Data Modeling</li>
+              <li>Query Optimization</li>
+              <li>Indexing</li>
+              <li>CRUD Operations</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Cloud Platforms</h3>
+            <ul>
+              <li>AWS (EC2, Lambda, API Gateway, RDS, S3, CloudWatch, IAM)</li>
+              <li>GCP (Basic)</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>Observability</h3>
+            <ul>
+              <li>Synthetic Monitoring</li>
+              <li>New Relic</li>
+              <li>Grafana</li>
+              <li>Logging & Alerting</li>
+            </ul>
+          </article>
+
+          <article class="card reveal interactive-item">
+            <h3>DevOps</h3>
+            <ul>
+              <li>Git</li>
+              <li>GitHub</li>
+              <li>Docker</li>
+              <li>CI/CD</li>
+              <li>GitHub Actions</li>
+              <li>VS Code</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Professional Journey</p>
+          <h2>Experience</h2>
+        </header>
+
+        <div class="timeline interactive-group" data-group="experience">
+          <article class="timeline-item card reveal interactive-item">
+            <div class="timeline-head">
+              <h3>Associate Software Engineer</h3>
+              <p class="timeline-company">Accenture – Bangalore</p>
+              <p class="timeline-date">May 2024 – Present</p>
+            </div>
+            <ul class="experience-lines">
+              <li>Develop and maintain Node.js and Express backend services supporting retail and e-commerce platforms.</li>
+              <li>Built 10+ reusable React dashboard components improving workflow efficiency by 25%.</li>
+              <li>Designed secure REST APIs with JWT authentication, validation, and structured error handling.</li>
+              <li>Optimized MySQL and MongoDB queries reducing query time by 8–10%.</li>
+              <li>Created 40+ Selenium synthetic monitoring scripts in New Relic reducing incident detection time from 60 minutes to under 15 minutes.</li>
+              <li>Built an internal certificate monitoring portal with GitHub Actions automation.</li>
+              <li>Deploy and maintain services on AWS using EC2, Lambda, API Gateway, RDS, S3, and CloudWatch.</li>
+            </ul>
+          </article>
+
+          <article class="timeline-item card reveal interactive-item">
+            <div class="timeline-head">
+              <h3>Frontend Software Developer</h3>
+              <p class="timeline-company">Annalect (Omnicom Media Group) – Bangalore</p>
+              <p class="timeline-date">Oct 2023 – Apr 2024</p>
+            </div>
+            <ul class="experience-lines">
+              <li>Developed responsive React applications for global advertising campaigns.</li>
+              <li>Built reusable React components with GSAP animations.</li>
+              <li>Created dynamic UI using props, state management, and conditional rendering.</li>
+              <li>Designed responsive HTML/CSS email templates with cross-browser compatibility.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="education">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Academics</p>
+          <h2>Education</h2>
+        </header>
+        <div class="grid two-col">
+          <article class="card reveal">
+            <h3>Master of Computer Application</h3>
+            <p>JAIN University</p>
+            <p class="muted">2024 – 2026</p>
+          </article>
+          <article class="card reveal">
+            <h3>Bachelor of Computer Application</h3>
+            <p>CMR University</p>
+            <p class="muted">2020 – 2023</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="certifications">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Recognition</p>
+          <h2>Certifications & Awards</h2>
+        </header>
+        <div class="grid two-col">
+          <article class="card reveal"><p>Tech Trailblazer Award – Accenture</p></article>
+          <article class="card reveal"><p>Best Performer – Accenture Training Program (2023)</p></article>
+          <article class="card reveal"><p>Super Intern – Edureka Full Stack Development Program</p></article>
+          <article class="card reveal"><p>React.js Essential Training – LinkedIn</p></article>
+          <article class="card reveal"><p>MongoDB SI Associate Certificate – MongoDB</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <header class="section-header reveal">
+          <p class="eyebrow">Get in Touch</p>
+          <h2>Contact</h2>
+        </header>
+
+        <div class="contact-grid">
+          <article class="card reveal">
+            <h3>Ajay Kumar</h3>
+            <p>Bangalore, India</p>
+            <ul class="contact-list">
+              <li><strong>Email:</strong> <a href="mailto:ajaydkumar.work@gmail.com">ajaydkumar.work@gmail.com</a></li>
+              <li><strong>Phone:</strong> <a href="tel:+919334393498">+91 9334393498</a></li>
+            </ul>
+          </article>
+
+          <form class="card contact-form reveal" id="contact-form" novalidate>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required />
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Write your message" required></textarea>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="assets/resume.pdf" download class="btn btn-secondary btn-download">Download Resume</a>
+            <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <p>© 2026 Ajay Kumar</p>
+      <ul class="social-links" aria-label="Social links">
+        <li><a href="#" aria-label="GitHub profile">GitHub</a></li>
+        <li><a href="#" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="mailto:ajaydkumar.work@gmail.com" aria-label="Send email">Email</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
