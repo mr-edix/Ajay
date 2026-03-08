@@ -2,7 +2,7 @@ const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-menu a');
 
-const initEarthBackground = () => {
+const initStarBackground = () => {
   const canvas = document.getElementById('earth-canvas');
   if (!canvas || typeof window.THREE === 'undefined') {
     return;
@@ -30,36 +30,6 @@ const initEarthBackground = () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0x000000, 0);
 
-  const textureLoader = new THREE.TextureLoader();
-  const earthGeometry = new THREE.SphereGeometry(8, 64, 64);
-  const earthTexture = textureLoader.load('https://unpkg.com/three-globe/example/img/earth-night.jpg');
-  const earthMaterial = new THREE.MeshStandardMaterial({
-    map: earthTexture,
-    roughness: 0.7,
-    metalness: 0.1,
-    emissiveMap: earthTexture,
-    emissive: new THREE.Color(0x112244),
-    emissiveIntensity: 0.4,
-    transparent: false,
-  });
-
-  const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-  earth.position.x = 6;
-  earth.position.y = -0.5;
-  earth.position.z = -6;
-  scene.add(earth);
-
-  const ambientLight = new THREE.AmbientLight(0x334466, 0.5);
-  scene.add(ambientLight);
-
-  const directionalLight = new THREE.DirectionalLight(0x6688cc, 1.2);
-  directionalLight.position.set(12, 8, 10);
-  scene.add(directionalLight);
-
-  const rimLight = new THREE.DirectionalLight(0x223355, 0.6);
-  rimLight.position.set(-10, -4, -8);
-  scene.add(rimLight);
-
   // Stars
   const starCount = 1800;
   const starPositions = new Float32Array(starCount * 3);
@@ -84,13 +54,8 @@ const initEarthBackground = () => {
   const stars = new THREE.Points(starGeometry, starMaterial);
   scene.add(stars);
 
-  let scrollRotation = 0;
-
   const onScroll = () => {
     const scrollY = window.scrollY;
-    earth.rotation.y += scrollY * 0.0003;
-    scrollRotation = Math.min(scrollY * 0.000005, 0.004);
-
     // Parallax: shift stars on scroll
     stars.position.y = scrollY * 0.05;
     stars.position.x = scrollY * 0.01;
@@ -100,16 +65,9 @@ const initEarthBackground = () => {
   const onResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     const nextPixelRatio = window.innerWidth < 700 ? 1.2 : 1.4;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, nextPixelRatio));
     renderer.setSize(window.innerWidth, window.innerHeight);
-
-    const compact = window.innerWidth < 760;
-    earth.scale.setScalar(compact ? 0.75 : 1);
-    earth.position.x = compact ? 4.5 : 6;
-    earth.position.y = compact ? -0.2 : -0.5;
-    earth.position.z = compact ? -7 : -5;
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -119,13 +77,8 @@ const initEarthBackground = () => {
 
   const animate = () => {
     rafId = window.requestAnimationFrame(animate);
-
-    earth.rotation.y += 0.001 + scrollRotation;
-    scrollRotation *= 0.92;
-
     stars.rotation.y += 0.00008;
     stars.rotation.x += 0.00003;
-
     renderer.render(scene, camera);
   };
 
@@ -136,15 +89,153 @@ const initEarthBackground = () => {
     window.cancelAnimationFrame(rafId);
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', onResize);
-    earthGeometry.dispose();
-    earthMaterial.dispose();
     starGeometry.dispose();
     starMaterial.dispose();
     renderer.dispose();
   });
 };
 
-initEarthBackground();
+// Animated wireframe sphere
+const initTechSphere = () => {
+  const canvas = document.getElementById('sphere-canvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let w, h, dpr;
+
+  const resize = () => {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = rect.width;
+    h = rect.height;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const points = [];
+  const rings = 14;
+  const perRing = 20;
+  const radius = Math.min(w, h) * 0.38;
+
+  for (let i = 0; i < rings; i++) {
+    const phi = (Math.PI * (i + 1)) / (rings + 1);
+    for (let j = 0; j < perRing; j++) {
+      const theta = (2 * Math.PI * j) / perRing;
+      points.push({ phi, theta });
+    }
+  }
+
+  // Floating particles
+  const particles = [];
+  for (let i = 0; i < 40; i++) {
+    particles.push({
+      phi: Math.random() * Math.PI,
+      theta: Math.random() * Math.PI * 2,
+      r: radius * (1.1 + Math.random() * 0.4),
+      speed: 0.002 + Math.random() * 0.004,
+      size: 1 + Math.random() * 1.5,
+      alpha: 0.3 + Math.random() * 0.5,
+    });
+  }
+
+  let angleY = 0;
+  let angleX = 0.3;
+  let scrollBoost = 0;
+
+  window.addEventListener('scroll', () => {
+    scrollBoost = window.scrollY * 0.00003;
+  }, { passive: true });
+
+  const project = (phi, theta, r) => {
+    const sp = Math.sin(phi), cp = Math.cos(phi);
+    const st = Math.sin(theta + angleY), ct = Math.cos(theta + angleY);
+    let x = r * sp * ct;
+    let y = r * cp;
+    let z = r * sp * st;
+    // X-axis rotation
+    const y2 = y * Math.cos(angleX) - z * Math.sin(angleX);
+    const z2 = y * Math.sin(angleX) + z * Math.cos(angleX);
+    return { x: x + w / 2, y: y2 + h / 2, z: z2 };
+  };
+
+  const animate = () => {
+    requestAnimationFrame(animate);
+    const r = Math.min(w, h) * 0.38;
+
+    ctx.clearRect(0, 0, w, h);
+    angleY += 0.005 + scrollBoost;
+    scrollBoost *= 0.95;
+
+    // Draw wireframe rings
+    ctx.strokeStyle = 'rgba(143, 183, 255, 0.12)';
+    ctx.lineWidth = 0.8;
+
+    // Latitude lines
+    for (let i = 0; i < rings; i++) {
+      const phi = (Math.PI * (i + 1)) / (rings + 1);
+      ctx.beginPath();
+      for (let j = 0; j <= perRing; j++) {
+        const theta = (2 * Math.PI * j) / perRing;
+        const p = project(phi, theta, r);
+        if (j === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+
+    // Longitude lines
+    for (let j = 0; j < perRing; j++) {
+      const theta = (2 * Math.PI * j) / perRing;
+      ctx.beginPath();
+      for (let i = 0; i <= rings + 1; i++) {
+        const phi = (Math.PI * i) / (rings + 1);
+        const p = project(phi, theta, r);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+
+    // Draw dots at intersections
+    for (const pt of points) {
+      const p = project(pt.phi, pt.theta, r);
+      const depth = (p.z + r) / (2 * r);
+      const alpha = 0.15 + depth * 0.5;
+      const size = 1 + depth * 1.5;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(143, 183, 255, ${alpha})`;
+      ctx.fill();
+    }
+
+    // Draw floating particles
+    for (const pt of particles) {
+      pt.theta += pt.speed;
+      const p = project(pt.phi, pt.theta, pt.r);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, pt.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(143, 183, 255, ${pt.alpha * 0.6})`;
+      ctx.fill();
+    }
+
+    // Center glow
+    const glow = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, r * 1.2);
+    glow.addColorStop(0, 'rgba(143, 183, 255, 0.06)');
+    glow.addColorStop(0.5, 'rgba(143, 183, 255, 0.02)');
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, w, h);
+  };
+
+  animate();
+};
+
+initStarBackground();
+initTechSphere();
 
 if (navToggle && navMenu) {
   navToggle.addEventListener('click', () => {
@@ -202,6 +293,57 @@ if (rotatingTitle && rotatingTitles.length > 1) {
       rotatingTitle.classList.remove('swap');
     }, 280);
   }, 2600);
+}
+
+// Skill scroller
+const skillTrack = document.getElementById('skill-track');
+if (skillTrack) {
+  const originalItems = Array.from(skillTrack.querySelectorAll('.skill-item'));
+  const total = originalItems.length;
+  const visible = 5;
+
+  // Clone all items and append for seamless loop
+  originalItems.forEach(item => {
+    skillTrack.appendChild(item.cloneNode(true));
+  });
+
+  const allItems = skillTrack.querySelectorAll('.skill-item');
+  let currentIndex = 0;
+
+  const itemH = 54;
+  const setupSizes = () => {
+    const scroller = skillTrack.parentElement;
+    allItems.forEach(item => { item.style.height = itemH + 'px'; });
+  };
+
+  setupSizes();
+  window.addEventListener('resize', () => { setupSizes(); applyState(); });
+
+  const applyState = () => {
+    skillTrack.style.transform = `translateY(-${currentIndex * itemH}px)`;
+    const centerIndex = currentIndex + 2;
+    allItems.forEach((item, i) => {
+      item.classList.toggle('active', i >= currentIndex && i < currentIndex + visible);
+      item.classList.toggle('center', i === centerIndex);
+    });
+  };
+
+  applyState();
+
+  setInterval(() => {
+    currentIndex++;
+    skillTrack.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    applyState();
+
+    // When we've scrolled past original set, silently reset
+    if (currentIndex >= total) {
+      setTimeout(() => {
+        skillTrack.style.transition = 'none';
+        currentIndex = 0;
+        applyState();
+      }, 520);
+    }
+  }, 1000);
 }
 
 const interactiveGroups = document.querySelectorAll('.interactive-group');
