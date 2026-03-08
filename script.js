@@ -234,8 +234,299 @@ const initTechSphere = () => {
   animate();
 };
 
+// === Skills 3D Tree ===
+const initSkillsTree = () => {
+  const container = document.querySelector('.skills-3d-container');
+  const canvas = document.getElementById('skills-canvas');
+  const tooltipEl = document.getElementById('skill-tooltip');
+  if (!canvas || !container || typeof THREE === 'undefined') return;
+
+  const scene = new THREE.Scene();
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  const camera = new THREE.PerspectiveCamera(50, cw / ch, 0.1, 1000);
+  camera.position.set(0, 0, 22);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(cw, ch);
+  renderer.setClearColor(0x000000, 0);
+
+  const treeGroup = new THREE.Group();
+  scene.add(treeGroup);
+
+  // Helper: cylinder between two 3D points
+  const makeBranch = (from, to, rTop, rBot, material) => {
+    const dir = new THREE.Vector3().subVectors(to, from);
+    const len = dir.length();
+    if (len < 0.001) return null;
+    const geo = new THREE.CylinderGeometry(rTop, rBot, len, 8);
+    const mesh = new THREE.Mesh(geo, material);
+    mesh.position.lerpVectors(from, to, 0.5);
+    const up = new THREE.Vector3(0, 1, 0);
+    mesh.quaternion.setFromUnitVectors(up, dir.clone().normalize());
+    return mesh;
+  };
+
+  // --- Trunk ---
+  const trunkFrom = new THREE.Vector3(0, -5, 0);
+  const trunkTo = new THREE.Vector3(0, 6.5, 0);
+  const trunkMat = new THREE.MeshBasicMaterial({ color: 0x4a7adb });
+  treeGroup.add(makeBranch(trunkFrom, trunkTo, 0.1, 0.22, trunkMat));
+
+  // Trunk glow
+  const trunkGlowMat = new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.06 });
+  treeGroup.add(makeBranch(trunkFrom, trunkTo, 0.3, 0.5, trunkGlowMat));
+
+  // Crown glow
+  const crownMat = new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.25 });
+  const crown = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), crownMat);
+  crown.position.set(0, 6.8, 0);
+  treeGroup.add(crown);
+  const crownOuter = new THREE.Mesh(
+    new THREE.SphereGeometry(1.0, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.05 })
+  );
+  crownOuter.position.set(0, 6.8, 0);
+  treeGroup.add(crownOuter);
+
+  // Root tendrils
+  const rootMat = new THREE.MeshBasicMaterial({ color: 0x2a4a8a });
+  const rootGlowMat = new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.04 });
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2 + 0.3;
+    const end = new THREE.Vector3(Math.cos(a) * 2, -6.5, Math.sin(a) * 2);
+    const r1 = makeBranch(trunkFrom, end, 0.03, 0.08, rootMat);
+    const r2 = makeBranch(trunkFrom, end, 0.08, 0.15, rootGlowMat);
+    if (r1) treeGroup.add(r1);
+    if (r2) treeGroup.add(r2);
+  }
+
+  // Junction rings at branch levels
+  const levelYs = [-3.5, -1, 1.5, 3.5, 5.5];
+  const junctionRings = [];
+  levelYs.forEach(y => {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.28, 0.04, 8, 24),
+      new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.35 })
+    );
+    ring.position.set(0, y, 0);
+    ring.rotation.x = Math.PI / 2;
+    treeGroup.add(ring);
+    junctionRings.push(ring);
+  });
+
+  // --- Skills data ---
+  const skills = [
+    { name: 'JavaScript', color: 0xf7df1e, level: 0, slot: 0 },
+    { name: 'HTML', color: 0xe34c26, level: 0, slot: 1 },
+    { name: 'CSS', color: 0x264de4, level: 0, slot: 2 },
+    { name: 'Node.js', color: 0x68a063, level: 1, slot: 0 },
+    { name: 'React.js', color: 0x61dafb, level: 1, slot: 1 },
+    { name: 'Express.js', color: 0x999999, level: 1, slot: 2 },
+    { name: 'MongoDB', color: 0x47a248, level: 2, slot: 0 },
+    { name: 'MySQL', color: 0x4479a1, level: 2, slot: 1 },
+    { name: 'Selenium WebDriver', color: 0x43b02a, level: 2, slot: 2 },
+    { name: 'AWS', color: 0xff9900, level: 3, slot: 0 },
+    { name: 'Git', color: 0xf05032, level: 3, slot: 1 },
+    { name: 'GitHub', color: 0xc9d1d9, level: 3, slot: 2 },
+    { name: 'CI/CD', color: 0x2088ff, level: 4, slot: 0 },
+    { name: 'Grafana', color: 0xf46800, level: 4, slot: 1 },
+    { name: 'New Relic', color: 0x1ce783, level: 4, slot: 2 },
+  ];
+
+  const branchLens = [5, 4.5, 4, 3.5, 3];
+  const angleOffsets = [0, 40, 80, 20, 60];
+  const upSlopes = [0.3, 0.5, 0.7, 1.0, 1.4];
+  const branchMat = new THREE.MeshBasicMaterial({ color: 0x3a6bc5 });
+  const branchGlowMat = new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.05 });
+
+  // Label creator
+  const makeLabel = (text) => {
+    const c = document.createElement('canvas');
+    const cx = c.getContext('2d');
+    c.width = 512; c.height = 80;
+    cx.font = '700 34px Inter, system-ui, sans-serif';
+    cx.textAlign = 'center';
+    cx.textBaseline = 'middle';
+    cx.fillStyle = '#ffffff';
+    cx.fillText(text, 256, 40);
+    const tex = new THREE.CanvasTexture(c);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.9 }));
+    sp.scale.set(3.2, 0.65, 1);
+    return sp;
+  };
+
+  const nodes = [];
+  const targets = [];
+
+  skills.forEach(sk => {
+    const y = levelYs[sk.level];
+    const bLen = branchLens[sk.level];
+    const angle = (sk.slot * 120 + angleOffsets[sk.level]) * Math.PI / 180;
+    const up = upSlopes[sk.level];
+
+    const startPt = new THREE.Vector3(0, y, 0);
+    const endPt = new THREE.Vector3(Math.cos(angle) * bLen, y + up, Math.sin(angle) * bLen);
+
+    // Branch solid + glow
+    const b1 = makeBranch(startPt, endPt, 0.04, 0.07, branchMat);
+    const b2 = makeBranch(startPt, endPt, 0.1, 0.16, branchGlowMat);
+    if (b1) treeGroup.add(b1);
+    if (b2) treeGroup.add(b2);
+
+    // Skill node
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.4, 20, 20),
+      new THREE.MeshBasicMaterial({ color: sk.color })
+    );
+    mesh.position.copy(endPt);
+
+    // Glow shell
+    const glowMat = new THREE.MeshBasicMaterial({ color: sk.color, transparent: true, opacity: 0.12 });
+    mesh.add(new THREE.Mesh(new THREE.SphereGeometry(0.65, 12, 12), glowMat));
+
+    // Label
+    const label = makeLabel(sk.name);
+    label.position.set(0, -0.9, 0);
+    mesh.add(label);
+
+    treeGroup.add(mesh);
+    targets.push(mesh);
+    nodes.push({ mesh, glowMat, name: sk.name, color: sk.color, baseY: endPt.y });
+  });
+
+  // --- Floating particles ---
+  const pCount = 50;
+  const pPos = new Float32Array(pCount * 3);
+  const pSpeeds = [];
+  for (let i = 0; i < pCount; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 0.5 + Math.random() * 5.5;
+    pPos[i * 3] = Math.cos(a) * r;
+    pPos[i * 3 + 1] = -5 + Math.random() * 12;
+    pPos[i * 3 + 2] = Math.sin(a) * r;
+    pSpeeds.push(0.003 + Math.random() * 0.008);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0x8fb7ff, size: 0.06, transparent: true, opacity: 0.4, sizeAttenuation: true });
+  treeGroup.add(new THREE.Points(pGeo, pMat));
+
+  // --- Energy pulse up trunk ---
+  const pulseMat = new THREE.MeshBasicMaterial({ color: 0x8fb7ff, transparent: true, opacity: 0.6 });
+  const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), pulseMat);
+  pulse.position.set(0, -5, 0);
+  treeGroup.add(pulse);
+
+  // --- Raycaster for hover ---
+  const raycaster = new THREE.Raycaster();
+  const mVec = new THREE.Vector2(-999, -999);
+  let hovered = -1;
+
+  const resetGlows = () => {
+    nodes.forEach(n => { n.glowMat.opacity = 0.12; n.mesh.scale.setScalar(1); });
+  };
+
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    mVec.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mVec.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    tooltipEl.style.left = (e.clientX - rect.left + 14) + 'px';
+    tooltipEl.style.top = (e.clientY - rect.top - 32) + 'px';
+  });
+
+  container.addEventListener('mouseleave', () => {
+    mVec.set(-999, -999);
+    hovered = -1;
+    tooltipEl.classList.remove('visible');
+    resetGlows();
+  });
+
+  // Click-to-rotate boost
+  let rotBoost = 0;
+  container.addEventListener('click', () => { rotBoost += 0.04; });
+
+  // --- Animation loop ---
+  let t = 0;
+  const animate = () => {
+    requestAnimationFrame(animate);
+    t += 0.008;
+
+    // Slow auto-rotation + click boost
+    treeGroup.rotation.y += 0.002 + rotBoost;
+    rotBoost *= 0.985;
+
+    // Subtle float
+    treeGroup.position.y = Math.sin(t * 0.6) * 0.12;
+
+    // Crown pulse
+    crownMat.opacity = 0.2 + Math.sin(t * 2) * 0.08;
+    crown.scale.setScalar(1 + Math.sin(t * 1.5) * 0.08);
+
+    // Energy pulse traveling up trunk
+    pulse.position.y = -5 + ((t * 0.8) % 1) * 11.5;
+    pulseMat.opacity = 0.4 + Math.sin(t * 6) * 0.2;
+
+    // Junction ring pulse
+    junctionRings.forEach((r, i) => {
+      r.material.opacity = 0.25 + Math.sin(t * 2 + i * 1.2) * 0.12;
+    });
+
+    // Particle drift upward
+    const pArr = pGeo.attributes.position.array;
+    for (let i = 0; i < pCount; i++) {
+      pArr[i * 3 + 1] += pSpeeds[i];
+      if (pArr[i * 3 + 1] > 7.5) pArr[i * 3 + 1] = -5;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    // Node breathing glow
+    nodes.forEach((n, i) => {
+      if (i !== hovered) {
+        n.glowMat.opacity = 0.1 + Math.sin(t * 1.5 + i * 0.7) * 0.04;
+      }
+    });
+
+    // Hover detection
+    raycaster.setFromCamera(mVec, camera);
+    const hits = raycaster.intersectObjects(targets);
+    if (hits.length > 0) {
+      const idx = targets.indexOf(hits[0].object);
+      if (idx !== -1 && idx !== hovered) {
+        resetGlows();
+        hovered = idx;
+        nodes[idx].glowMat.opacity = 0.5;
+        nodes[idx].mesh.scale.setScalar(1.4);
+        tooltipEl.textContent = nodes[idx].name;
+        tooltipEl.classList.add('visible');
+        tooltipEl.style.borderColor = '#' + new THREE.Color(nodes[idx].color).getHexString();
+      }
+    } else if (hovered !== -1) {
+      hovered = -1;
+      resetGlows();
+      tooltipEl.classList.remove('visible');
+    }
+
+    renderer.render(scene, camera);
+  };
+
+  animate();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    const nw = container.clientWidth;
+    const nh = container.clientHeight;
+    camera.aspect = nw / nh;
+    camera.updateProjectionMatrix();
+    renderer.setSize(nw, nh);
+  });
+};
+
 initStarBackground();
 initTechSphere();
+initSkillsTree();
 
 if (navToggle && navMenu) {
   navToggle.addEventListener('click', () => {

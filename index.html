@@ -98,6 +98,10 @@ Full-Stack Software Engineer specializing in scalable backend services, React-ba
           <p class="eyebrow">Technical Expertise</p>
           <h2>Skills</h2>
         </header>
+        <div class="skills-3d-container reveal">
+          <canvas id="skills-canvas"></canvas>
+          <div id="skill-tooltip" class="skill-tooltip"></div>
+        </div>
         <div class="skills-grid">
           <article class="skill-card reveal">
             <div class="skill-card-head">
@@ -359,6 +363,10 @@ Full-Stack Software Engineer specializing in scalable backend services, React-ba
                 </div>
               </li>
             </ul>
+            <div class="resume-section">
+              <p class="resume-text">Interested in working together? Download my resume to learn more about my experience and skills.</p>
+              <a href="assets/resume.pdf" download class="btn btn-primary btn-download"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Resume</a>
+            </div>
           </article>
 
           <form class="contact-form-card reveal" id="contact-form" novalidate>
@@ -377,7 +385,6 @@ Full-Stack Software Engineer specializing in scalable backend services, React-ba
             </div>
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Submit</button>
-              <a href="assets/resume.pdf" download class="btn btn-secondary btn-download">Download Resume</a>
             </div>
             <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
           </form>
