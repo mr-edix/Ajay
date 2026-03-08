@@ -41,7 +41,6 @@ highlightActiveLink();
 
 const rotatingTitle = document.getElementById('hero-rotating-title');
 const rotatingTitles = [
-  'Full-Stack Software Engineer',
   'Full-Stack Engineer with SRE Capabilities',
   'AI-Focused Full-Stack Engineer',
   'Backend & Reliability Engineer',
