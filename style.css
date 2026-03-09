@@ -279,15 +279,19 @@ p {
 }
 
 .hero {
-  padding-top: 1.55rem;
-  padding-bottom: 2.1rem;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .hero-grid {
   display: grid;
-  gap: 1.2rem;
+  gap: 2rem;
   grid-template-columns: 1fr;
-  align-items: stretch;
+  align-items: center;
 }
 
 .hero-content {
@@ -1273,16 +1277,11 @@ textarea:focus {
 
   .hero-grid {
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 1.4rem;
+    gap: 2.5rem;
   }
 
   .section {
     padding: 3.45rem 0;
-  }
-
-  .hero {
-    padding-top: 1.8rem;
-    padding-bottom: 2.35rem;
   }
 
   .skills-grid {
