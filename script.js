@@ -589,7 +589,7 @@ if (rotatingTitle && rotatingTitles.length > 1) {
 // 3D Mouse-tracking card tilt effect
 const canHover = window.matchMedia('(hover: hover)').matches;
 if (canHover) {
-  const tiltCards = document.querySelectorAll('.skill-card, .exp-card, .edu-card, .cert-card, .summary-card, .contact-info-card, .contact-form-card');
+  const tiltCards = document.querySelectorAll('.skill-card, .exp-card, .edu-card, .cert-card, .summary-card, .contact-info-card, .contact-resume-card');
 
   tiltCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {

@@ -1153,52 +1153,77 @@ p {
   color: #8fb7ff;
 }
 
-.contact-form-card {
+.contact-cta {
+  margin-top: 1.8rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.contact-resume-card {
   background: rgba(15, 15, 20, 0.5);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius);
-  padding: 1.8rem;
-  display: grid;
-  gap: 0.9rem;
+  padding: 2rem 1.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  position: relative;
+  overflow: hidden;
   transition: transform 0.45s cubic-bezier(0.23,1,0.32,1), box-shadow 0.45s cubic-bezier(0.23,1,0.32,1);
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-.contact-form-card:hover {
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(143,183,255,0.06);
+.contact-resume-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8fb7ff, transparent);
 }
 
-.contact-form-card h3 {
-  margin: 0 0 0.3rem;
-  font-size: 1.1rem;
+.contact-resume-card:hover {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(143, 183, 255, 0.08), 0 4px 12px rgba(143,183,255,0.04) inset;
+}
+
+.resume-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(143, 183, 255, 0.08);
+  border: 1px solid rgba(143, 183, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8fb7ff;
+  margin-bottom: 0.3rem;
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.contact-resume-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #fff;
-}
-
-.form-group {
-  display: grid;
-  gap: 0.3rem;
 }
 
 .contact-grid {
   display: grid;
   gap: 1.2rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  margin-top: 0.3rem;
-}
-
-.resume-section {
-  margin-top: 1.8rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .resume-text {
@@ -1346,7 +1371,7 @@ textarea:focus {
 
   .contact-grid {
     grid-template-columns: 1fr 1fr;
-    align-items: start;
+    align-items: stretch;
   }
 
   .exp-timeline {
